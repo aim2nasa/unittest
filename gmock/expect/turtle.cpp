@@ -68,3 +68,15 @@ TEST(Painter, uninteresting_call_NiceMock)
 	Painter painter(&turtle);
 	EXPECT_EQ(painter.GetX(),0);	//0: default action for int
 }
+
+using ::testing::StrictMock;
+
+TEST(Painter, uninteresting_call_StrictMock)
+{
+	StrictMock<MockTurtle> turtle;
+
+	//No expectations are given to generate "uninteresting call" warning message
+
+	Painter painter(&turtle);
+	EXPECT_EQ(painter.GetX(),0);	//0: default action for int
+}

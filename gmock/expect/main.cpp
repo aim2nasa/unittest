@@ -24,11 +24,17 @@ public:
 };
 
 using ::testing::_;
+using ::testing::Return;
 
 TEST(ClerkTest, add)
 {
 	MockCalc calc;
-	EXPECT_CALL(calc, Plus(_,_)).Times(1);
+	EXPECT_CALL(calc, Plus(_,_))
+		.Times(1)
+		.WillRepeatedly(Return(3));
+
+	Clerk clerk(&calc);
+	EXPECT_EQ(clerk.add(1,2),3);
 }
 
 int main(int argc, char** argv)

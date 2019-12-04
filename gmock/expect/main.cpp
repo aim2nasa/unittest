@@ -50,6 +50,22 @@ TEST(ClerkTest, exceedCall)
 	EXPECT_EQ(clerk.add(1,2),3); //exceed call
 }
 
+TEST(ClerkTest, loopAdd)
+{
+	MockCalc calc;
+
+	for(int i=0;i<10;i++){
+		EXPECT_CALL(calc, Plus(i+1,i+2))
+			.Times(1)
+			.WillOnce(Return(i+3));
+	}
+
+	Clerk clerk(&calc);
+	for(int i=0;i<10;i++){
+		EXPECT_EQ(clerk.add(i+1,i+2),i+3);
+	}
+}
+
 int main(int argc, char** argv)
 {
 	// The following line must be executed to initialize Google Mock

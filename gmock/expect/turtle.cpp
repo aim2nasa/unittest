@@ -46,3 +46,13 @@ TEST(Painter, sticky_2)
 	EXPECT_EQ(painter.GetX(),10);
 	EXPECT_EQ(painter.GetX(),20);
 }
+
+TEST(Painter, uninteresting_call)
+{
+	MockTurtle turtle;
+
+	//No expectations are given to generate "uninteresting call" warning message
+
+	Painter painter(&turtle);
+	EXPECT_EQ(painter.GetX(),0);	//0: default action for int
+}

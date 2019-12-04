@@ -2,15 +2,47 @@
 #include "gmock/gmock.h"
 
 #include "../turtle/mock_turtle.h"
-#include "../turtle/painter.h"
 
-using ::testing::AtLeast;
+class Painter
+{
+	Turtle * turtle_;
+public:
+	Painter( Turtle * turtle): turtle_(turtle){}
 
-TEST(PainterTest, CanDrawSomething)
+	int GetX()
+	{
+		return turtle_->GetX();
+    }
+};
+
+using ::testing::Return;
+
+TEST(Painter, sticky_1)
 {
 	MockTurtle turtle;
-	EXPECT_CALL(turtle, PenDown()).Times(AtLeast(1));
-	Painter painter(&turtle);
 
-	EXPECT_TRUE(painter.DrawCircle(0,0,10));
+	int n=1;
+	for(int i=n;i>0;i--) {
+		EXPECT_CALL(turtle, GetX())
+			.WillOnce(Return(10*i));
+	}
+
+	Painter painter(&turtle);
+	EXPECT_EQ(painter.GetX(),10);
+}
+
+TEST(Painter, sticky_2)
+{
+	MockTurtle turtle;
+
+	int n=2;
+	for(int i=n;i>0;i--) {
+		EXPECT_CALL(turtle, GetX())
+			.WillOnce(Return(10*i))
+			.RetiresOnSaturation();
+	}
+
+	Painter painter(&turtle);
+	EXPECT_EQ(painter.GetX(),10);
+	EXPECT_EQ(painter.GetX(),20);
 }

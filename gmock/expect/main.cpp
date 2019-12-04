@@ -30,11 +30,12 @@ TEST(ClerkTest, add)
 {
 	MockCalc calc;
 	EXPECT_CALL(calc, Plus(_,_))
-		.Times(1)
+		.Times(2)
 		.WillRepeatedly(Return(3));
 
 	Clerk clerk(&calc);
 	EXPECT_EQ(clerk.add(1,2),3);
+	EXPECT_EQ(clerk.add(5,4),3);	//WillRepeatedly(Return(3))
 }
 
 TEST(ClerkTest, exceedCall)

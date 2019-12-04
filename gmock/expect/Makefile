@@ -3,7 +3,7 @@ CXXFLAGS = -std=c++11
 INCLUDES = -I$(shell pwd)
 
 TARGET = runTests
-SRCS = main.cpp
+SRCS = main.cpp turtle.cpp
 OBJS = ${SRCS:.cpp=.o}
 
 GTEST_LIBRARIES = -L/usr/local/lib -lgtest -lpthread -lgmock

@@ -66,6 +66,19 @@ TEST(ClerkTest, loopAdd)
 	}
 }
 
+TEST(ClerkTest, multipleExpectations)
+{
+	MockCalc calc;
+	EXPECT_CALL(calc, Plus(_,_));
+	EXPECT_CALL(calc, Plus(_,_))
+		.Times(2);
+
+	Clerk clerk(&calc);
+	EXPECT_EQ(clerk.add(1,2),0);	//0: default action for int
+	EXPECT_EQ(clerk.add(1,2),0);
+	EXPECT_EQ(clerk.add(1,2),0);
+}
+
 int main(int argc, char** argv)
 {
 	// The following line must be executed to initialize Google Mock

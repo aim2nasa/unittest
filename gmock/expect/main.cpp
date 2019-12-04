@@ -6,11 +6,13 @@ public:
 
 	virtual ~Calc(){}
 	virtual int Plus(int a,int b)=0;
+	virtual int Minus(int a,int b)=0;
 };
 
 class MockCalc : public Calc{
 public:
 	MOCK_METHOD(int, Plus, (int a,int b), (override));
+	MOCK_METHOD(int, Minus, (int a,int b), (override));
 };
 
 class Clerk{
@@ -20,6 +22,10 @@ public:
 
 	int add(int a,int b){
 		return calc_->Plus(a,b);
+	}
+
+	int orderedCall(int a,int b){
+		return (calc_->Plus(a,b))*(calc_->Minus(a,b));
 	}
 };
 
@@ -77,6 +83,36 @@ TEST(ClerkTest, multipleExpectations)
 	EXPECT_EQ(clerk.add(1,2),0);	//0: default action for int
 	EXPECT_EQ(clerk.add(1,2),0);
 	EXPECT_EQ(clerk.add(1,2),0);
+}
+
+using ::testing::InSequence;
+
+TEST(ClerkTest, orderedCall)
+{
+	MockCalc calc;
+
+	InSequence seq;
+
+	//Right Call sequence with Clerk::orderedCall
+	EXPECT_CALL(calc,Plus);		//Plus was called first in orderdCall
+	EXPECT_CALL(calc,Minus);	//Minus was called after Plus in orderdCall
+
+	Clerk clerk(&calc);
+	EXPECT_EQ(clerk.orderedCall(1,2),0);	//0: default action for int
+}
+
+TEST(ClerkTest, outOrderedCall)
+{
+	MockCalc calc;
+
+	InSequence seq;
+
+	//unmatched Call sequence with Clerk::orderedCall
+	EXPECT_CALL(calc,Minus);	//Minus was called after Plus in orderdCall
+	EXPECT_CALL(calc,Plus);		//Plus was called first in orderdCall
+
+	Clerk clerk(&calc);
+	EXPECT_EQ(clerk.orderedCall(1,2),0);	//0: default action for int
 }
 
 int main(int argc, char** argv)
